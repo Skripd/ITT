@@ -1,0 +1,41 @@
+<div class="clr-row">
+    <div class="clr-col-*">
+        <button class="btn btn-primary" (click)="modalNewTrackerOpen = true">Create Fundraiser</button>
+        <button class="btn btn-primary" (click)="showWizard = true">Create Transaction</button>
+    </div>
+    <div class="clr-col-*">
+        <div *ngIf="loading">
+            <clr-spinner clrInline> Loading</clr-spinner> <span>Loading </span>
+        </div>
+    </div>
+</div>
+<div *ngIf="!loading" class="clr-row">
+    <div class="clr-col-lg-4" *ngFor="let fundraiser of fundraisers">
+        <app-fundraiser-card [fundraiser]="fundraiser"></app-fundraiser-card>
+    </div>
+</div>
+
+
+<clr-modal [(clrModalOpen)]="modalNewTrackerOpen" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Create a new fundraiser</h3>
+    <div class="modal-body">
+        <form clrForm clrLayout="horizontal" [formGroup]="createTrackerForm" (ngSubmit)="submit()">
+            <clr-input-container>
+                <label>Tracker Name</label>
+                <input clrInput type="text" formControlName="trackerName" required />
+                <clr-control-helper>A name for the new tracker to be created</clr-control-helper>
+                <clr-control-error *clrIfError="'pattern'">Only letters are allowed</clr-control-error>
+                <clr-control-error *clrIfError="'alreadyTaken'">Fundraiser already exists!</clr-control-error>
+            </clr-input-container>
+        </form>
+    </div>
+
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="resetForm()">Cancel</button>
+        <button type="button" class="btn btn-success" [disabled]="!createTrackerForm.valid" (click)="submit()"
+            [clrLoading]="runningAddOperation">Submit</button>
+    </div>
+</clr-modal>
+
+<app-transaction-wizard [(show)]="showWizard" [fundraisers]="fundraisers"></app-transaction-wizard>

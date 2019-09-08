@@ -1,0 +1,39 @@
+// iframe#youtube
+// {
+//     // width: 100px;
+//     // height: 100px;
+//     // background-color: #00FF00;
+//     position: absolute;
+//     // top: 100px;
+//     // left: 100px;
+//     z-index: 8;
+//     opacity: 0;
+// }
+
+// button#fleeing
+// {
+//     position: absolute !important;
+//     z-index: 9;
+//     top: 50% !important;
+//     left: 50% !important;
+//     width: 200px; 
+//     height: 200px; 
+// }
+
+div#wrapBtn {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+}
+
+div#wrapFrame {
+    position: absolute;
+    z-index: 1;
+    align-self: center;
+    
+    // top: 50%;
+    // left: 50%;
+    // width: 1280px;
+    // height: 720px;
+}

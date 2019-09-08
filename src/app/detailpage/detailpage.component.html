@@ -1,0 +1,47 @@
+<div class="clr-row">
+    <div class="clr-col-lg-5">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Graph for {{fundraiser.name}}</h4>
+            </div>
+            <div class="card-block">
+                <div class="card-body">
+                    <app-detail-pie-chart *ngIf="!loading" [data]="fundraiser | chartData"></app-detail-pie-chart>
+                    <clr-spinner *ngIf="loading">Loading</clr-spinner>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="clr-col-lg-7">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Transactions</h4>
+            </div>
+            <div class="card-block">
+                <div class="card-body">
+                    <clr-datagrid *ngIf="!loading">
+                        <clr-dg-column>Name</clr-dg-column>
+                        <clr-dg-column>Creation date</clr-dg-column>
+                        <clr-dg-column>Amount</clr-dg-column>
+
+                        <clr-dg-row *ngFor="let transaction of fundraiser.transactions">
+                            <clr-dg-cell>{{transaction.name}}</clr-dg-cell>
+                            <clr-dg-cell>{{transaction.date | date}}</clr-dg-cell>
+                            <clr-dg-cell>{{transaction.amount}}</clr-dg-cell>
+                        </clr-dg-row>
+
+                        <clr-dg-footer>{{fundraiser.transactions.length}} transactions</clr-dg-footer>
+                    </clr-datagrid>
+                    <clr-spinner *ngIf="loading">Loading</clr-spinner>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 
+    [view]="view" 
+    [tooltipText]="pieTooltipText"  
+-->

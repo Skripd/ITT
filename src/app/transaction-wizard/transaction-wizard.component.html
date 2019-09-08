@@ -1,0 +1,43 @@
+<clr-wizard #wizard [(clrWizardOpen)]="show" clrWizardSize="md">
+    <clr-wizard-title>Donation Wizard</clr-wizard-title>
+
+    <clr-wizard-button [type]="'cancel'" (click)="onCancel()">Cancel</clr-wizard-button>
+    <clr-wizard-button [type]="'previous'">Back</clr-wizard-button>
+    <clr-wizard-button [type]="'next'" (click)="onNext()">Next</clr-wizard-button>
+    <clr-wizard-button [type]="'finish'" (click)="onSubmit()">Finish</clr-wizard-button>
+
+    <clr-wizard-page>
+        <ng-template clrPageTitle>Fundraiser</ng-template>
+        <form clrForm clrLayout="vertical" [formGroup]="createTransactionForm" (ngSubmit)="submitTransaction()">
+            <clr-select-container>
+                <label>Select a Fundraiser from the list</label>
+                <select clrSelect formControlName="wizardFundraiserOption" required>
+                    <ng-container *ngFor="let fundraiser of fundraisers">
+                        <option value="{{fundraiser.id}}">{{fundraiser.name}}</option>
+                    </ng-container>
+                </select>
+                <clr-control-helper>Select a fundraiser from the list</clr-control-helper>
+            </clr-select-container>
+        </form>
+    </clr-wizard-page>
+
+    <clr-wizard-page>
+        <ng-template clrPageTitle>Name</ng-template>
+        <form clrForm clrLayout="vertical" [formGroup]="createTransactionForm">
+            <Label>Choose a name</Label>
+            <input clrInput type="text" formControlName="wizardDonatorName">
+            <clr-control-helper>The name displayed on the fund tracker</clr-control-helper>
+            <!-- <clr-control-error>Numbers are not allowed</clr-control-error> -->
+        </form>
+    </clr-wizard-page>
+
+    <clr-wizard-page>
+        <ng-template clrPageTitle>GIVE. ME. MONEY.</ng-template>
+        <form clrForm clrLayout="vertical" [formGroup]="createTransactionForm">
+            <Label>Choose a amount</Label>
+            <input clrInput type="number" formControlName="wizardAmount">
+            <clr-control-helper>The amount you want to contribute</clr-control-helper>
+            <!-- <clr-control-error>Only values higher than 0</clr-control-error> -->
+        </form>
+    </clr-wizard-page>
+</clr-wizard>
