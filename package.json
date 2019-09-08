@@ -24,7 +24,7 @@
     "@clr/ui": "2.1.2",
     "@swimlane/ngx-charts": "^12.0.1",
     "@webcomponents/custom-elements": "^1.0.0",
-    "rxjs": "~6.4.0",
+    "rxjs": "~6.5.3",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },
