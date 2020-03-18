@@ -1,4 +1,4 @@
-<clr-wizard #wizard [(clrWizardOpen)]="show" clrWizardSize="md">
+<clr-wizard #wizard [(clrWizardOpen)]="open" clrWizardSize="md">
     <clr-wizard-title>Donation Wizard</clr-wizard-title>
 
     <clr-wizard-button [type]="'cancel'" (click)="onCancel()">Cancel</clr-wizard-button>
@@ -8,7 +8,7 @@
 
     <clr-wizard-page>
         <ng-template clrPageTitle>Fundraiser</ng-template>
-        <form clrForm clrLayout="vertical" [formGroup]="createTransactionForm" (ngSubmit)="submitTransaction()">
+        <form clrForm clrLayout="vertical" [formGroup]="createTransactionForm">
             <clr-select-container>
                 <label>Select a Fundraiser from the list</label>
                 <select clrSelect formControlName="wizardFundraiserOption" required>

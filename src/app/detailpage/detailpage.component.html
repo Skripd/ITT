@@ -2,7 +2,7 @@
     <div class="clr-col-lg-5">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Graph for {{fundraiser.name}}</h4>
+                <h4 *ngIf="!loading" class="card-title">Graph for {{fundraiser.name}}</h4>
             </div>
             <div class="card-block">
                 <div class="card-body">

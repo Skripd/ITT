@@ -14,9 +14,9 @@ export class TransactionWizardComponent implements OnInit {
   @ViewChild('wizard', { static: false }) wizard: ClrWizard;
 
   @Input() fundraisers: Fundraiser[];
-  @Output() showChange = new EventEmitter<boolean>();
 
-  open: boolean;
+  @Input() open: boolean;
+  @Output() openChange = new EventEmitter<boolean>();
 
   createTransactionForm = new FormGroup({
     wizardFundraiserOption: new FormControl('', [Validators.required]),
@@ -29,19 +29,19 @@ export class TransactionWizardComponent implements OnInit {
   ngOnInit() {
   }
 
-  @Input()
-  get show() {
-    return this.open;
-  }
+  // @Input()
+  // get show() {
+  //   return this.open;
+  // }
 
-  set show(show: boolean) {
-    this.open = show;
-    this.showChange.emit(this.open);
+  // set show(show: boolean) {
+  //   this.open = show;
+  //   // this.showChange.emit(this.open);
 
-    if (show) {
-      this.wizard.open();
-    }
-  }
+  //   if (show) {
+  //     this.wizard.open();
+  //   }
+  // }
 
   // Too much a hassle to implement fully. Gonna assume errors never happen which is acceptable since the backend is fake.
   onSubmit(): void {
@@ -49,27 +49,30 @@ export class TransactionWizardComponent implements OnInit {
     this.backend.addTransaction(
       new Transaction(
         new Date(),
-        Number(this.createTransactionForm.get('wizardAmount').value), 
-        this.createTransactionForm.get('wizardDonatorName').value, 
+        Number(this.createTransactionForm.get('wizardAmount').value),
+        this.createTransactionForm.get('wizardDonatorName').value,
         Number(this.createTransactionForm.get('wizardFundraiserOption').value)),
     ).subscribe(
       result => {
         this.createTransactionForm.reset();
         this.wizard.reset();
-        this.show = false;
+        this.open = false;
+        this.openChange.emit(false);
       },
       error => {
         console.log(`ERROR::WIZARD::ONSUBMIT::\n\n${error}`);
         this.createTransactionForm.reset();
         this.wizard.reset();
-        this.show = false;
+        this.open = false;
+        this.openChange.emit(false);
       }
     );
   }
 
   onCancel() {
     this.createTransactionForm.reset();
-    this.show = false;
+    this.open = false;
+    this.openChange.emit(false);
   }
 
   onNext() {

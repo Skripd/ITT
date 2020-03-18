@@ -6,20 +6,44 @@ import { Fundraiser } from './.models/fundraiser.model';
 import { Transaction } from './.models/transaction.model';
 
 // array with Transactions
-const transactions: Transaction[] = [
-    new Transaction(new Date(), 8, 'Octo'),
-    new Transaction(new Date(), 4, 'Spongebob'),
-    new Transaction(new Date(), 2, 'Hugh Heffner'),
-    new Transaction(new Date(), 5, 'Jack Daniels'),
-    new Transaction(new Date(), 15, 'Louis Vuitton'),
-];
+// const transactions: Transaction[] = [
+//     new Transaction(new Date(), 8, 'Octo'),
+//     new Transaction(new Date(), 4, 'Spongebob'),
+//     new Transaction(new Date(), 2, 'Hugh Heffner'),
+//     new Transaction(new Date(), 5, 'Jack Daniels'),
+//     new Transaction(new Date(), 15, 'Louis Vuitton'),
+// ];
 
 // array with Fundraisers
 let fundraisers: Fundraiser[] = [
-    new Fundraiser(0, 'Parting gift for colleague', Object.assign(transactions)),
-    new Fundraiser(1, 'Janets birthday', Object.assign(transactions)),
-    new Fundraiser(2, 'Gas money trip to disneyland', Object.assign(transactions)),
-    new Fundraiser(3, 'Dinner Disneyland @ Pluto Steakhouse', Object.assign(transactions)),
+    new Fundraiser(0, 'Parting gift for colleague', [
+        new Transaction(new Date(), 8, 'Sjaak Trekhaak'),
+        new Transaction(new Date(), 4, 'Spongebob'),
+        new Transaction(new Date(), 2, 'Hugh Heffner'),
+        new Transaction(new Date(), 5, 'Jack Daniels'),
+        new Transaction(new Date(), 15, 'Louis Vuitton'),
+    ]),
+    new Fundraiser(1, 'Janets birthday', [
+        new Transaction(new Date(), 8, 'Sjaak Trekhaak'),
+        new Transaction(new Date(), 4, 'Spongebob'),
+        new Transaction(new Date(), 2, 'Hugh Heffner'),
+        new Transaction(new Date(), 5, 'Jack Daniels'),
+        new Transaction(new Date(), 15, 'Louis Vuitton'),
+    ]),
+    new Fundraiser(2, 'Gas money trip to disneyland', [
+        new Transaction(new Date(), 8, 'Sjaak Trekhaak'),
+        new Transaction(new Date(), 4, 'Spongebob'),
+        new Transaction(new Date(), 2, 'Hugh Heffner'),
+        new Transaction(new Date(), 5, 'Jack Daniels'),
+        new Transaction(new Date(), 15, 'Louis Vuitton'),
+    ]),
+    new Fundraiser(3, 'Dinner Disneyland @ Pluto Steakhouse', [
+        new Transaction(new Date(), 8, 'Sjaak Trekhaak'),
+        new Transaction(new Date(), 4, 'Spongebob'),
+        new Transaction(new Date(), 2, 'Hugh Heffner'),
+        new Transaction(new Date(), 5, 'Jack Daniels'),
+        new Transaction(new Date(), 15, 'Louis Vuitton'),
+    ]),
 ];
 
 @Injectable()
@@ -71,7 +95,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
             console.log(`BACKEND::\n${JSON.stringify(rs)}`);
 
-            if (fundraisers.find(x => x.name === rs.trackerName)) {
+            if (fundraisers.find(x => x.name.toLowerCase() === rs.trackerName.toLowerCase())) {
                 return error(`Fundraiser with name ${rs.name} already exists!`);
             }
 
@@ -87,6 +111,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         }
 
         function getFundraiserById() {
+            console.log(`IDFROMURL::${idFromUrl()}`);
             const fr = fundraisers.find(x => x.id === idFromUrl());
             console.log(`\nBACKEND::GET_BY_ID::\n\n${JSON.stringify(fr)}`);
             return ok(fr);
