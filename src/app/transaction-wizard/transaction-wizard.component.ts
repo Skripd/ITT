@@ -11,7 +11,7 @@ import { Transaction } from '../.models/transaction.model';
   //  styleUrls: ['./transaction-wizard.component.scss']
 })
 export class TransactionWizardComponent implements OnInit {
-  @ViewChild('wizard', { static: false }) wizard: ClrWizard;
+  @ViewChild('wizard') wizard: ClrWizard;
 
   @Input() fundraisers: Fundraiser[];
 
