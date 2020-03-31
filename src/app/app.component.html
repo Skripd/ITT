@@ -1,30 +1,33 @@
 <div class="main-container">
   <div *ngIf="showAlert" class="alert alert-app-level">
-      Alert
+    Alert
   </div>
   <header class="header header-6">
     <div class="branding">
-      <a [routerLink]="[ '/' ]"><clr-icon shape="cloud" class="is-solid"></clr-icon><span class="title">Internet Technology</span></a>
+      <a [routerLink]="[ '/' ]">
+        <clr-icon shape="cloud" class="is-solid"></clr-icon><span class="title">Internet Technology</span>
+      </a>
     </div>
-    
+
     <div class="header-nav">
-      <a [routerLink]="[ '/detail' ]" routerLinkActive="active" class="nav-link"><span class="nav-text">Detail</span></a>
+      <a [routerLink]="[ '/detail' ]" routerLinkActive="active" class="nav-link"><span
+          class="nav-text">Detail</span></a>
       <a [routerLink]="[ '/log' ]" routerLinkActive="active" class="nav-link"><span class="nav-text">Logging</span></a>
     </div>
 
     <div class="header-actions">
       <clr-dropdown>
-          <button class="nav-icon" clrDropdownTrigger aria-label="open user menu">
-              <clr-icon shape="user"></clr-icon>
-              <clr-icon shape="caret down"></clr-icon>
-          </button>
-          <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-            <a clrDropdownItem (click)="setLightTheme()">Light</a>
-            <a clrDropdownItem (click)="setDarkTheme()">Dark</a>
-            <a [routerLink]="[ '/about' ]" clrDropdownItem>About</a>
-            <a [routerLink]="[ '/preferences' ]" clrDropdownItem>Preferences</a>
-            <a [routerLink]="[ '/logout' ]" clrDropdownItem>Log out</a>
-          </clr-dropdown-menu>
+        <button class="nav-text" clrDropdownTrigger aria-label="open user profile">
+          {{user}}
+          <clr-icon shape="caret down"></clr-icon>
+        </button>
+        <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+          <a clrDropdownItem (click)="setLightTheme()">Light</a>
+          <a clrDropdownItem (click)="setDarkTheme()">Dark</a>
+          <a [routerLink]="[ '/about' ]" clrDropdownItem>About</a>
+          <a [routerLink]="[ '/preferences' ]" clrDropdownItem>Preferences</a>
+          <a (click)="logout()" clrDropdownItem>Log out</a>
+        </clr-dropdown-menu>
       </clr-dropdown>
     </div>
   </header>
@@ -32,11 +35,11 @@
 
   </nav>
   <div class="content-container">
-      <div class="content-area">
-        <router-outlet></router-outlet>
-      </div>
-      <nav *ngIf="showSidenav" class="sidenav">
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+    <nav *ngIf="showSidenav" class="sidenav">
 
-      </nav>
+    </nav>
   </div>
 </div>

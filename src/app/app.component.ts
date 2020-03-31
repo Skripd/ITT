@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ThemeService } from './theme.service';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,12 @@ import { ThemeService } from './theme.service';
 })
 export class AppComponent implements OnInit {
 
-  constructor(private themeService: ThemeService) {}
+  user = 'placeholder';
+
+  constructor(
+    private themeService: ThemeService,
+    private kc: KeycloakService,
+    ) {}
 
   showAlert = false;
   showSubnav = false;
@@ -17,7 +23,9 @@ export class AppComponent implements OnInit {
   title = 'itt';
 
   ngOnInit(): void {
-    // throw new Error("Method not implemented.");
+    this.kc.loadUserProfile().then((rs) => {
+      this.user = rs.email;
+    });
   }
 
   setLightTheme(): void {
@@ -26,5 +34,9 @@ export class AppComponent implements OnInit {
 
   setDarkTheme(): void {
     this.themeService.setTheme(1);
+  }
+
+  logout() {
+    this.kc.logout(window.location.origin + '/');
   }
 }

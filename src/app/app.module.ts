@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ApplicationRef } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +19,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { DetailPieChartComponent } from './detailpage/detail-pie-chart/detail-pie-chart.component';
 import { TransactionWizardComponent } from './transaction-wizard/transaction-wizard.component';
 
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+const keycloakService = new KeycloakService();
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,6 +37,7 @@ import { TransactionWizardComponent } from './transaction-wizard/transaction-wiz
     TransactionWizardComponent,
   ],
   imports: [
+    KeycloakAngularModule,
     BrowserModule,
     AppRoutingModule,
     ClarityModule,
@@ -39,16 +45,43 @@ import { TransactionWizardComponent } from './transaction-wizard/transaction-wiz
     BrowserAnimationsModule,
     NgxChartsModule,
     HttpClientModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
-  providers: [fakeBackendProvider, ChartDataPipe],
+  providers: [
+    fakeBackendProvider,
+    ChartDataPipe,
+    {
+      provide: KeycloakService,
+      useValue: keycloakService
+    },
+  ],
   entryComponents: [AppComponent],
 })
 export class AppModule {
 
-  // Bootstrap the angular application a bit later to allow the loading screen to display.
-  ngDoBootstrap(app) {
-    // setTimeout(() => {
-      app.bootstrap(AppComponent);
-    // }, 3000);
+  // Defer bootstrapping until keycloak has initialized.
+  ngDoBootstrap(appRef: ApplicationRef) {
+    keycloakService
+    .init({
+      initOptions: {
+        onLoad: 'check-sso',
+        enableLogging: true,
+        silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html'
+      },
+      config: {
+        clientId: 'itt-client',
+        realm: 'itt',
+        url: 'http://localhost:8080/auth',
+      }
+    })
+    .then((loggedin) => {
+      console.log(`[NgDoBootstrap] Keycloak initialized Bootstrapping App`);
+
+      loggedin ? appRef.bootstrap(AppComponent) : keycloakService.login({
+        redirectUri: window.location.origin + '/',
+      });
+      // appRef.bootstrap(AppComponent);
+    })
+    .catch(error => console.error(`[NgDoBootstrap] Keycloak Initializer Failed`, error));
   }
 }
