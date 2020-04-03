@@ -1,0 +1,16 @@
+type Transaction {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  amount: Float!
+  user: String!
+  owner: Fundraiser!
+}
+
+type Fundraiser {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  name: String!
+  transactions: [Transaction!]! @relation(link: INLINE) 
+}

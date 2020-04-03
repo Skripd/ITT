@@ -71,7 +71,7 @@ export class AppModule {
       config: {
         clientId: 'itt-client',
         realm: 'itt',
-        url: 'http://localhost:8080/auth',
+        url: 'https://auth.armorer.nl/auth',
       }
     })
     .then((loggedin) => {
