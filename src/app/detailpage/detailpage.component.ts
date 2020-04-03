@@ -34,7 +34,9 @@ export class DetailpageComponent implements OnInit {
     this.route.paramMap.subscribe((map: ParamMap) => {
 
       this.processor.process(map.get('id')).then(value => {
-        this.payments = value;
+        if(value?.length > 0) {
+          this.payments = value;
+        }
         this.paymentsLoading = false;
       });
 
