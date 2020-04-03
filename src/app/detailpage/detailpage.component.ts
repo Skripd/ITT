@@ -17,8 +17,8 @@ export class DetailpageComponent implements OnInit {
   fundraiser: IFundraiser;
   loading: boolean;
 
-  payments: UserToUserPayment[];
-  paymentsLoading: boolean;
+  payments: UserToUserPayment[] = [];
+  paymentsLoading = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -51,6 +51,8 @@ export class DetailpageComponent implements OnInit {
 
         // Manual invocation of the chartData Pipe also works
         // this.data = this.chartPipe.transform(rs);
+      }, err => {
+        console.error('[DETAIL] [PROBABLY CLIENT NOT DEFINED]');
       });
     });
   }
