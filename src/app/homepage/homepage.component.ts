@@ -27,7 +27,7 @@ export class HomepageComponent implements OnInit {
       asyncValidators: [this.nameUniqueValidator.validate.bind(this.nameUniqueValidator)],
       validators: [
         Validators.required,
-        Validators.pattern('^[a-zA-Z ]*$'),
+        Validators.pattern('^[a-z0-9 ]*$'),
         Validators.minLength(3),
         Validators.maxLength(26),
       ]
@@ -86,17 +86,8 @@ export class HomepageComponent implements OnInit {
         self.loading = false;
       }
     });
-  }
 
-
-  resetForm(): void {
-    this.createTrackerForm.reset();
-    this.modalNewTrackerOpen = false;
-  }
-
-  check(): void {
-    // this.runningAddOperation = true;
-    this.createTrackerForm.statusChanges.subscribe(rs => {
+    this.createTrackerForm.get('trackerName').statusChanges.subscribe(rs => {
       switch (rs) {
         case 'VALID': this.checkValid();
                       break;
@@ -109,6 +100,16 @@ export class HomepageComponent implements OnInit {
         default: console.error('[TRACKERFORM VALIDATION] [UNCAUGHT STATE]'); this.runningAddOperation = false;
       }
     });
+  }
+
+
+  resetForm(): void {
+    this.createTrackerForm.reset();
+    this.modalNewTrackerOpen = false;
+  }
+
+  check(): void {
+    // this.runningAddOperation = true;
     this.createTrackerForm.updateValueAndValidity(); // .get('trackerName').updateValueAndValidity();
   }
 
