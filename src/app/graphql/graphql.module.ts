@@ -12,7 +12,7 @@ import { KeycloakService } from 'keycloak-angular';
 import { getMainDefinition } from 'apollo-utilities';
 import { split } from 'apollo-link';
 
-const uri = 'http://localhost:3000/graphql';
+const uri = 'https://api.armorer.nl:8443/graphql';
 
 @NgModule({
   imports: [
