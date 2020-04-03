@@ -1,0 +1,7 @@
+mutation deleteFundraiser($id: ID!) {
+  deleteFundraiser(where: {
+    id: $id,
+  }) {
+    id
+  }
+}

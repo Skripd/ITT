@@ -1,0 +1,9 @@
+subscription transactionChanges {
+  transaction {
+    node {
+      owner {
+        id
+      }
+    }
+  }
+}

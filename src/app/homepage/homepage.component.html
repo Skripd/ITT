@@ -1,7 +1,7 @@
 <div class="clr-row">
     <div class="clr-col-*">
         <button class="btn btn-primary" (click)="modalNewTrackerOpen = true">Create Fundraiser</button>
-        <button class="btn btn-primary" (click)="showWizard = true">Create Transaction</button>
+        <button class="btn btn-primary" (click)="open = true">Create Transaction</button>
     </div>
     <div class="clr-col-*">
         <div *ngIf="loading">
@@ -11,7 +11,7 @@
 </div>
 <div *ngIf="!loading" class="clr-row">
     <div class="clr-col-lg-4" *ngFor="let fundraiser of fundraisers">
-        <app-fundraiser-card [fundraiser]="fundraiser"></app-fundraiser-card>
+        <app-fundraiser-card (deleted)="onFundraiserDelete($event)" [fundraiser]="fundraiser"></app-fundraiser-card>
     </div>
 </div>
 
@@ -19,13 +19,16 @@
 <clr-modal [(clrModalOpen)]="modalNewTrackerOpen" [clrModalSize]="'lg'">
     <h3 class="modal-title">Create a new fundraiser</h3>
     <div class="modal-body">
-        <form clrForm clrLayout="horizontal" [formGroup]="createTrackerForm" (ngSubmit)="submit()">
+        <form clrForm clrLayout="horizontal" [formGroup]="createTrackerForm" (ngSubmit)="check()">
             <clr-input-container>
                 <label>Tracker Name</label>
                 <input clrInput type="text" formControlName="trackerName" required />
                 <clr-control-helper>A name for the new tracker to be created</clr-control-helper>
+                <clr-control-error *clrIfError="'required'">Name is required</clr-control-error>
                 <clr-control-error *clrIfError="'pattern'">Only letters are allowed</clr-control-error>
-                <clr-control-error *clrIfError="'alreadyTaken'">Fundraiser already exists!</clr-control-error>
+                <clr-control-error *clrIfError="'minLength'">Minimal Length is 3</clr-control-error>
+                <clr-control-error *clrIfError="'maxLength'">Maximum Length is 26</clr-control-error>
+                <clr-control-error *clrIfError="'unique'">Fundraiser already exists!</clr-control-error>
             </clr-input-container>
         </form>
     </div>
@@ -33,9 +36,96 @@
 
     <div class="modal-footer">
         <button type="button" class="btn btn-outline" (click)="resetForm()">Cancel</button>
-        <button type="button" class="btn btn-success" [disabled]="!createTrackerForm.valid" (click)="submit()"
+        <button type="button" class="btn btn-success" [disabled]="trackerSubmitDisabled" (click)="writeFundraiser()"
             [clrLoading]="runningAddOperation">Submit</button>
     </div>
 </clr-modal>
 
-<app-transaction-wizard [(open)]="showWizard" [fundraisers]="fundraisers"></app-transaction-wizard>
+<!-- <app-transaction-wizard (openChange)="onTransactionWizardOpenChange($event)" [(open)]="showWizard" [fundraisers]="fundraisers"></app-transaction-wizard> -->
+<clr-wizard #wizard [(clrWizardOpen)]="open" (clrWizardCurrentPageChanged)="resetFinalPage()" clrWizardSize="lg">
+    <clr-wizard-title>Create a new transaction</clr-wizard-title>
+
+    <clr-wizard-button [type]="'cancel'">Cancel</clr-wizard-button>
+    <clr-wizard-button [type]="'previous'">Back</clr-wizard-button>
+    <clr-wizard-button [type]="'next'">Next</clr-wizard-button>
+    <clr-wizard-button [type]="'finish'">
+        {{ finished ? "Done" : "Submit" }}
+    </clr-wizard-button>
+
+    <clr-wizard-page [clrWizardPageNextDisabled]="!createTransactionForm.get('tFundraiserName').valid"> 
+        <ng-template clrPageTitle>Which fundraiser?</ng-template>
+        <form clrForm [formGroup]="createTransactionForm">
+            <clr-select-container>
+                <label>Select a Fundraiser from the list</label>
+                <select clrSelect formControlName="tFundraiserName" required>
+                    <ng-container *ngFor="let fundraiser of fundraisers">
+                        <option value="{{fundraiser.id}}">{{fundraiser.name}}</option>
+                    </ng-container>
+                </select>
+                <clr-control-helper>Select a fundraiser from the list</clr-control-helper>
+            </clr-select-container>
+        </form>
+    </clr-wizard-page>
+
+    <clr-wizard-page [clrWizardPageNextDisabled]="!createTransactionForm.get('tUserName').valid">
+        <ng-template clrPageTitle>Name</ng-template>
+        <form clrForm clrLayout="vertical" [formGroup]="createTransactionForm">
+            <Label>Choose a name</Label>
+            <input clrInput type="text" formControlName="tUserName">
+            <clr-control-helper>The name displayed on the fund tracker</clr-control-helper>
+        </form>
+    </clr-wizard-page>
+
+    <clr-wizard-page [clrWizardPageNextDisabled]="!createTransactionForm.get('tAmount').valid || createTransactionForm.get('tAmount').value <= 0">
+        <ng-template clrPageTitle>How much money do you pay?</ng-template>
+        <form clrForm clrLayout="vertical" [formGroup]="createTransactionForm">
+            <Label>Choose a amount</Label>
+            <input clrInput type="number" formControlName="tAmount">
+            <clr-control-helper>The amount you want to contribute</clr-control-helper>
+            <!-- <clr-control-error>Only values higher than 0</clr-control-error> -->
+        </form>
+    </clr-wizard-page>
+
+    <clr-wizard-page #myFinishPage clrWizardPagePreventDefault="true" (clrWizardPageOnCommit)="onCommit()"
+        (clrWizardPageOnCancel)="doCancel()" (clrWizardPagePrevious)="goBack()">
+        <ng-template clrPageTitle>Review your transaction</ng-template> <!-- mandatory -->
+
+        <clr-alert *ngIf="errorFlag" [clrAlertType]="'alert-danger'" [clrCloseButtonAriaLabel]="'Close Answer alert'">
+            <div class="alert-item">
+                Something went wrong
+            </div>
+        </clr-alert>
+
+        <clr-spinner *ngIf="loadingFlag">
+            Loading
+        </clr-spinner>
+
+        <p *ngIf="errorFlag && !loadingFlag">Go back and try again!</p>
+
+        <p *ngIf="showCongrats && !loadingFlag">Congratulations! You are a good friend!</p>
+
+        <div *ngIf="!checked && !loadingFlag">
+            <p>Verify this information then click submit to process your transaction.</p>
+            <ul class="list">
+                <li>
+                    Fundraiser:
+                    <ul class="list">
+                        <li>{{createTransactionForm.get('tFundraiserName').value}}</li>
+                    </ul>
+                </li>
+                <li>
+                    Name
+                    <ul class="list">
+                        <li>{{createTransactionForm.get('tUserName').value}}</li>
+                    </ul>
+                </li>
+                <li>
+                    Amount
+                    <ul class="list">
+                        <li>{{createTransactionForm.get('tAmount').value}}</li>
+                    </ul>
+                </li>    
+            </ul>
+        </div>
+    </clr-wizard-page>
+</clr-wizard>

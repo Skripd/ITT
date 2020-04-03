@@ -1,0 +1,7 @@
+mutation createFundraiser($name: String!) {
+  createFundraiser(data: {
+    name: $name
+  }) {
+     id
+  }
+}

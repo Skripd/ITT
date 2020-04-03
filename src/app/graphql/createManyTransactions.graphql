@@ -1,0 +1,13 @@
+mutation insertManyTransactions($id: ID!, $transactions: [TransactionCreateWithoutOwnerInput!]!) {
+ updateFundraiser(data: {
+  transactions: {
+    create: $transactions
+  }
+} where: {
+  id: $id
+}) {
+  transactions {
+    id
+  }
+}
+}
