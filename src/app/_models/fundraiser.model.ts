@@ -1,4 +1,4 @@
-import { Transaction } from './transaction.model';
+import { Transaction, ITransaction } from './transaction.model';
 
 export class Fundraiser {
 
@@ -11,4 +11,13 @@ export class Fundraiser {
         this.name = name;
         this.transactions = transactions;
     }
+}
+
+export interface IFundraiser {
+    id?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    name?: string;
+    transactions?: ITransaction[];
+    count?: number;
 }

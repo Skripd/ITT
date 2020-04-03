@@ -1,0 +1,13 @@
+query getFundraisersIndex {
+  fundraisersConnection {
+    aggregate {
+      count
+    }
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}

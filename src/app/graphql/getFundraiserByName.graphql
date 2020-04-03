@@ -1,0 +1,7 @@
+query findByName($name: String!){
+  fundraisers(where: {
+    name: $name
+  }) {
+    id
+  }
+}

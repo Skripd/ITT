@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpRequest, HttpResponse, HttpHandler, HttpEvent, HttpInterceptor, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
-import { Fundraiser } from './.models/fundraiser.model';
-import { Transaction } from './.models/transaction.model';
+import { Fundraiser } from './_models/fundraiser.model';
+import { Transaction } from './_models/transaction.model';
 
 // array with Transactions
 // const transactions: Transaction[] = [

@@ -1,0 +1,13 @@
+mutation createTransaction($amount: Float!, $user: String!, $owner: ID!) {
+  createTransaction(data: {
+    amount: $amount
+    user: $user
+    owner: {
+      connect: {
+        id: $owner
+      }
+    }
+  }) {
+    id
+  }
+}

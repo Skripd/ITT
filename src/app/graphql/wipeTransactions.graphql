@@ -1,0 +1,14 @@
+mutation wipeTransactions($id: ID!) {
+  updateFundraiser(data: {
+    transactions: {
+      deleteMany: {
+        amount_gt: -1
+      }
+    }
+  }
+  where: {
+    id: $id
+  }) {
+    id
+  }
+}

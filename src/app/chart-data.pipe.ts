@@ -1,33 +1,37 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Fundraiser } from './.models/fundraiser.model';
-import { isNullOrUndefined } from 'util';
-import { Transaction } from './.models/transaction.model';
+import { IFundraiser } from './_models/fundraiser.model';
+import { ITransaction } from './_models/transaction.model';
+import * as _ from 'lodash';
 
 @Pipe({
   name: 'chartData'
 })
 export class ChartDataPipe implements PipeTransform {
 
-  transform(_in: Fundraiser): any[] {
+  transform(_in: IFundraiser): any[] {
 
 
     if (_in === undefined) {
-      console.log(`CHARTPIPE::INPUT::${JSON.stringify(_in)}`);
       return [];
     }
 
-    let _out: any[] = [];
+    // first we add up all transactions
+    const output = _(_in.transactions).groupBy('user')
+    .map((objs, key) => ({
+      user: key.toLowerCase(),
+      amount: _.sumBy(objs, 'amount')
+    }))
+    .value();
+    
+    // Second we transform the data so that the chart can display it
+    const _out: any[] = [];
 
-    _in.transactions.forEach(t => {
-      const tmp = t as Transaction;
-      console.log(tmp);
+    output.forEach(t => {
       _out.push({
-        name: t.name,
+        name: t.user,
         value: t.amount,
       });
     });
-
-    console.log(JSON.stringify(_out));
 
     return _out;
   }

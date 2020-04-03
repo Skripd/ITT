@@ -9,3 +9,12 @@ export class Transaction {
         this.date = _date; this.amount = _amount; this.name = _name; this.id = _id;
     }
 }
+
+export interface ITransaction {
+    id?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    amount?: number;
+    user?: string;
+    owner?: string;
+}

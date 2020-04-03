@@ -1,0 +1,12 @@
+query fundraiserByOwner($id: ID!){
+  fundraiser(where: {
+    id: $id
+  }) {
+    id
+    name
+    transactions {
+      user
+      amount
+    }
+  }
+}

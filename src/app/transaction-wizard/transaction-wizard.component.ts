@@ -1,81 +1,88 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ClrWizard } from '@clr/angular';
-import { FundraiserService } from '../fundraiser.service';
-import { Fundraiser } from '../.models/fundraiser.model';
-import { Transaction } from '../.models/transaction.model';
+import { ClrWizard, ClrWizardPage } from '@clr/angular';
+import { IFundraiser } from '../_models/fundraiser.model';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-transaction-wizard',
   templateUrl: './transaction-wizard.component.html',
-  //  styleUrls: ['./transaction-wizard.component.scss']
 })
 export class TransactionWizardComponent implements OnInit {
   @ViewChild('wizard') wizard: ClrWizard;
+  @ViewChild('myForm') formData: any;
+  @ViewChild('myFinishPage') finishPage: ClrWizardPage;
 
-  @Input() fundraisers: Fundraiser[];
+  loadingFlag = false;
+  errorFlag = false;
+  checked = false;
+  finished = false;
+  //  open = false;
+  answer: number = null;
 
+  @Input() fundraisers: IFundraiser[];
   @Input() open: boolean;
   @Output() openChange = new EventEmitter<boolean>();
 
   createTransactionForm = new FormGroup({
     wizardFundraiserOption: new FormControl('', [Validators.required]),
-    wizardDonatorName: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z ]*$')]),
-    wizardAmount: new FormControl('', [Validators.required, Validators.min(1)]),
+    wizardDonatorName: new FormControl(this.kc.getUsername(), [Validators.required, Validators.pattern('^[a-z0-9_-]{3,16}$')]),
+    wizardAmount: new FormControl(0, [Validators.required, Validators.min(1)]),
   });
 
-  constructor(private backend: FundraiserService) { }
+  constructor(private readonly kc: KeycloakService) { }
 
   ngOnInit() {
   }
 
-  // @Input()
-  // get show() {
-  //   return this.open;
-  // }
-
-  // set show(show: boolean) {
-  //   this.open = show;
-  //   // this.showChange.emit(this.open);
-
-  //   if (show) {
-  //     this.wizard.open();
-  //   }
-  // }
-
-  // Too much a hassle to implement fully. Gonna assume errors never happen which is acceptable since the backend is fake.
-  onSubmit(): void {
-    console.log(this.createTransactionForm.value);
-    this.backend.addTransaction(
-      new Transaction(
-        new Date(),
-        Number(this.createTransactionForm.get('wizardAmount').value),
-        this.createTransactionForm.get('wizardDonatorName').value,
-        Number(this.createTransactionForm.get('wizardFundraiserOption').value)),
-    ).subscribe(
-      result => {
-        this.createTransactionForm.reset();
-        this.wizard.reset();
-        this.open = false;
-        this.openChange.emit(false);
-      },
-      error => {
-        console.log(`ERROR::WIZARD::ONSUBMIT::\n\n${error}`);
-        this.createTransactionForm.reset();
-        this.wizard.reset();
-        this.open = false;
-        this.openChange.emit(false);
-      }
-    );
-  }
-
-  onCancel() {
-    this.createTransactionForm.reset();
+  // have to define doCancel because page will prevent doCancel from working
+  // if the page had a previous button, you would need to call
+  // this.wizard.previous() manually as well...
+  doCancel(): void {
+    this.wizard.close();
+    // this.openChange.emit(false);
     this.open = false;
-    this.openChange.emit(false);
   }
 
-  onNext() {
-    this.createTransactionForm.markAllAsTouched();
+  get showCongrats(): boolean {
+    return !this.errorFlag && this.checked;
+  }
+
+  resetFinalPage(): void {
+    this.loadingFlag = false;
+    this.errorFlag = false;
+    this.checked = false;
+  }
+
+  goBack(): void {
+    this.wizard.previous();
+  }
+
+  doFinish(): void {
+    this.wizard.forceFinish();
+    this.resetFinalPage();
+    this.open = false;
+  }
+
+  onCommit(): void {
+    const value: any = this.formData.value;
+    this.loadingFlag = true;
+    this.errorFlag = false;
+
+    if (this.finished) {
+      this.doFinish();
+      return;
+    }
+
+    setTimeout(() => {
+      if (value.answer === '42') {
+        this.finished = true;
+      } else {
+        this.finishPage.completed = false;
+        this.errorFlag = true;
+      }
+      this.checked = true;
+      this.loadingFlag = false;
+    }, 1000);
   }
 }

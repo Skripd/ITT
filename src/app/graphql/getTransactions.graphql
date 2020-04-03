@@ -1,0 +1,16 @@
+query getEverythingUsefull {
+  fundraisers {
+    id
+    name
+    transactions {
+      id
+      createdAt
+      updatedAt
+      amount
+      user
+      owner {
+        id
+      }
+    }
+  }
+}

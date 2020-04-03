@@ -4,7 +4,7 @@ import { NgModule, ApplicationRef } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ClarityModule } from '@clr/angular';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomepageComponent } from './homepage/homepage.component';
 import { LogpageComponent } from './logpage/logpage.component';
@@ -12,6 +12,10 @@ import { DetailpageComponent } from './detailpage/detailpage.component';
 import { NotfoundpageComponent } from './notfoundpage/notfoundpage.component';
 import { FundraiserCardComponent } from './fundraiser-card/fundraiser-card.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+
+import { ApolloModule } from 'apollo-angular';
+import { HttpLinkModule } from 'apollo-angular-link-http';
+
 import { ChartDataPipe } from './chart-data.pipe';
 
 import { fakeBackendProvider } from './fake-backend-interceptor';
@@ -22,6 +26,9 @@ import { TransactionWizardComponent } from './transaction-wizard/transaction-wiz
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { NameUniqueValidator } from './_utils/name-unique-validator';
+import { PostProcessorService } from './_utils/post-processor.service';
+
 const keycloakService = new KeycloakService();
 
 @NgModule({
@@ -46,6 +53,9 @@ const keycloakService = new KeycloakService();
     NgxChartsModule,
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ApolloModule,
+    HttpLinkModule,
+    FormsModule
   ],
   providers: [
     fakeBackendProvider,
@@ -54,6 +64,8 @@ const keycloakService = new KeycloakService();
       provide: KeycloakService,
       useValue: keycloakService
     },
+    NameUniqueValidator,
+    PostProcessorService
   ],
   entryComponents: [AppComponent],
 })

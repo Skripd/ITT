@@ -1,19 +1,17 @@
-<a [routerLink]="[ '/detail', fundraiser.id ]" class="card clickable">
-    <div class="card-header">
-        {{fundraiser.name}}
-    </div>
-    <div class="card-block">
+<a  class="card clickable">
+<div class="card-header">
+    {{fundraiser.name}}
+</div>
+<div [routerLink]="[ '/detail', fundraiser.id ]" class="card-block">
         <div class="card-title">
         </div>
-        <div class="card-text">
-            Here will be the transactions
+        <div [ngPlural]="fundraiser.count" class="card-text">
+            <ng-template ngPluralCase="=0">This fundraiser has {{fundraiser.count}} transactions.</ng-template>
+            <ng-template ngPluralCase="=1">This fundraiser has {{fundraiser.count}} transaction.</ng-template>
+            <ng-template ngPluralCase="other">This fundraiser has {{fundraiser.count}} transactions.</ng-template>
         </div>
     </div>
+    <div class="card-footer">
+        <button (click)="onDelete()" class="btn btn-sm btn-link">Delete</button>
+    </div>
 </a>
-
-<!-- <div class="card"> -->
-<!-- <div class="card-footer">
-                <button class="btn btn-sm btn-link">Footer Action 1</button>
-                <button class="btn btn-sm btn-link">Footer Action 2</button>
-            </div> -->
-<!-- </div> -->

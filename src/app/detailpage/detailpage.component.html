@@ -14,7 +14,7 @@
 
     </div>
 
-    <div class="clr-col-lg-7">
+    <div class="clr-col-lg-3">
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">Transactions</h4>
@@ -27,8 +27,8 @@
                         <clr-dg-column>Amount</clr-dg-column>
 
                         <clr-dg-row *ngFor="let transaction of fundraiser.transactions">
-                            <clr-dg-cell>{{transaction.name}}</clr-dg-cell>
-                            <clr-dg-cell>{{transaction.date | date}}</clr-dg-cell>
+                            <clr-dg-cell>{{transaction.user}}</clr-dg-cell>
+                            <clr-dg-cell>{{transaction.updatedAt | date}}</clr-dg-cell>
                             <clr-dg-cell>{{transaction.amount}}</clr-dg-cell>
                         </clr-dg-row>
 
@@ -39,7 +39,34 @@
             </div>
         </div>
     </div>
+
+    <div class="clr-col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Tiki's</h4>
+            </div>
+            <div class="card-block">
+                <div class="card-body">
+                    <clr-datagrid *ngIf="!paymentsLoading">
+                        <clr-dg-column>From</clr-dg-column>
+                        <clr-dg-column>To</clr-dg-column>
+                        <clr-dg-column>Amount</clr-dg-column>
+
+                        <clr-dg-row *ngFor="let p of payments">
+                            <clr-dg-cell>{{p.from}}</clr-dg-cell>
+                            <clr-dg-cell>{{p.to}}</clr-dg-cell>
+                            <clr-dg-cell>€{{p.amount}}</clr-dg-cell>
+                        </clr-dg-row>
+
+                        <clr-dg-footer>{{payments.length}} Tiki's</clr-dg-footer>
+                    </clr-datagrid>
+                    <clr-spinner *ngIf="paymentsLoading">Loading</clr-spinner>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 
 <!-- 
     [view]="view" 

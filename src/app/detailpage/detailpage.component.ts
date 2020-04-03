@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
-import { Fundraiser } from '../.models/fundraiser.model';
-
-import { FundraiserService } from '../fundraiser.service';
+import { IFundraiser } from '../_models/fundraiser.model';
+import { GetFundraiserGQL } from '../generated/graphql';
+import { ITransaction } from '../_models/transaction.model';
+import { PostProcessorService } from '../_utils/post-processor.service';
+import { UserToUserPayment } from '../_models/userToUserPayment';
 
 @Component({
   selector: 'app-detailpage',
@@ -12,22 +14,40 @@ import { FundraiserService } from '../fundraiser.service';
 })
 export class DetailpageComponent implements OnInit {
 
-  fundraiser: Fundraiser;
+  fundraiser: IFundraiser;
   loading: boolean;
+
+  payments: UserToUserPayment[];
+  paymentsLoading: boolean;
 
   constructor(
     private route: ActivatedRoute,
-    private backend: FundraiserService,
+    private readonly service: GetFundraiserGQL,
+    private readonly processor: PostProcessorService
   ) { }
 
   ngOnInit() {
     this.loading = true;
+    this.paymentsLoading = true;
+
 
     this.route.paramMap.subscribe((map: ParamMap) => {
-      this.backend.getByID(Number(map.get('id'))).subscribe((rs: Fundraiser) => {
+
+      this.processor.process(map.get('id')).then(value => {
+        this.payments = value;
+        this.paymentsLoading = false;
+      });
+
+      this.service.fetch({
+        id: map.get('id')
+      }).subscribe(rs => {
         console.log(`ONINIT::DETAIL::\n\n${JSON.stringify(rs)}`);
-        this.fundraiser = rs;
-        this.loading = false;
+        if (rs.errors) {
+          return;
+        } else {
+          this.fundraiser = rs.data.fundraiser;
+          this.loading = false;
+        }
 
         // Manual invocation of the chartData Pipe also works
         // this.data = this.chartPipe.transform(rs);
