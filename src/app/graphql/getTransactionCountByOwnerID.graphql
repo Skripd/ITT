@@ -1,0 +1,11 @@
+query getTransactionCountByOwnerID($id: ID!) {
+  transactionsConnection(where: {
+    owner: {
+      id: $id
+    }
+  }) {
+    aggregate {
+      count
+    }
+  }
+}

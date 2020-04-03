@@ -703,6 +703,30 @@ export namespace GetFundraisersIndex {
   };
 }
 
+export namespace GetTransactionCountByOwnerId {
+  export type Variables = {
+    id: string;
+  };
+
+  export type Query = {
+    __typename?: "Query";
+
+    transactionsConnection: TransactionsConnection;
+  };
+
+  export type TransactionsConnection = {
+    __typename?: "TransactionConnection";
+
+    aggregate: Aggregate;
+  };
+
+  export type Aggregate = {
+    __typename?: "AggregateTransaction";
+
+    count: number;
+  };
+}
+
 export namespace GetEverythingUsefull {
   export type Variables = {};
 
@@ -963,6 +987,23 @@ export class GetFundraisersIndexGQL extends Apollo.Query<
             id
             name
           }
+        }
+      }
+    }
+  `;
+}
+@Injectable({
+  providedIn: "root"
+})
+export class GetTransactionCountByOwnerIdGQL extends Apollo.Query<
+  GetTransactionCountByOwnerId.Query,
+  GetTransactionCountByOwnerId.Variables
+> {
+  document: any = gql`
+    query getTransactionCountByOwnerID($id: ID!) {
+      transactionsConnection(where: { owner: { id: $id } }) {
+        aggregate {
+          count
         }
       }
     }
