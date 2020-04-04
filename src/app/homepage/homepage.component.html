@@ -87,7 +87,7 @@
     </clr-wizard-page>
 
     <clr-wizard-page #myFinishPage clrWizardPagePreventDefault="true" (clrWizardPageOnCommit)="onCommit()"
-        (clrWizardPageOnCancel)="doCancel()" (clrWizardPagePrevious)="goBack()">
+        (clrWizardPageOnCancel)="doCancel()" (clrWizardPagePrevious)="goBack()" [clrWizardPageNextDisabled]="loadingFlag">
         <ng-template clrPageTitle>Review your transaction</ng-template> <!-- mandatory -->
 
         <clr-alert *ngIf="errorFlag" [clrAlertType]="'alert-danger'" [clrCloseButtonAriaLabel]="'Close Answer alert'">
