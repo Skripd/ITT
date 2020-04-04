@@ -1,6 +1,13 @@
-mutation deleteFundraiser($id: ID!) {
+mutation deleteFundraiserByID($id: ID!) {
+  deleteManyTransactions(where: {
+    owner: {
+      id: $id
+    }
+  }) {
+    count
+  }
   deleteFundraiser(where: {
-    id: $id,
+    id: $id
   }) {
     id
   }

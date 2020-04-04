@@ -27,7 +27,7 @@ export class FundraiserCardComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.getTransactionCount.fetch({
       id: this.fundraiser.id
-    }).subscribe(rs => {      
+    }).subscribe(rs => {
       if (rs.errors) {
       } else {
         this.transactionCount = rs.data.transactionsConnection.aggregate.count;
@@ -47,6 +47,7 @@ export class FundraiserCardComponent implements OnDestroy, OnInit {
       id: this.fundraiser.id
     }).subscribe(rs => {
       if (rs.errors) {
+        console.error(rs.errors);
         this.deleted.emit(null);
       } else {
         this.deleted.emit(rs.data.deleteFundraiser?.id);
