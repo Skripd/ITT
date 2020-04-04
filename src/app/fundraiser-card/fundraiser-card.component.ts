@@ -17,6 +17,7 @@ export class FundraiserCardComponent implements OnDestroy, OnInit {
   delete: Subscription;
 
   loading = true;
+  authError = false;
   transactionCount = 0;
 
   constructor(
@@ -47,8 +48,11 @@ export class FundraiserCardComponent implements OnDestroy, OnInit {
       id: this.fundraiser.id
     }).subscribe(rs => {
       if (rs.errors) {
-        console.error(rs.errors);
+        this.authError = true;
         this.deleted.emit(null);
+        setTimeout(() => {
+          this.authError = false;
+        }, 5000);
       } else {
         this.deleted.emit(rs.data.deleteFundraiser?.id);
       }

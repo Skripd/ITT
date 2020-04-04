@@ -3,8 +3,13 @@
         {{fundraiser.name}}
     </div>
     <div [routerLink]="[ '/detail', fundraiser.id ]" class="card-block">
-        <!-- <div class="card-title">
-        </div> -->
+        <clr-alert *ngIf="authError" [clrAlertType]="'danger'">
+            <clr-alert-item>
+                <span class="alert-text">
+                    You do not have permission to delete this.
+                </span>
+            </clr-alert-item>
+        </clr-alert>
         <div *ngIf="!loading" [ngPlural]="transactionCount" class="card-text">
             <ng-template ngPluralCase="=0">This fundraiser has {{transactionCount}} transactions.</ng-template>
             <ng-template ngPluralCase="=1">This fundraiser has {{transactionCount}} transaction.</ng-template>
