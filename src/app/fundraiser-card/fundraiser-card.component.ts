@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { IFundraiser } from '../_models/fundraiser.model';
-import { DeleteFundraiserGQL, GetTransactionCountByOwnerIdGQL } from 'src/app/generated/graphql';
+import { DeleteFundraiserByIdGQL, GetTransactionCountByOwnerIdGQL } from 'src/app/generated/graphql';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -20,7 +20,7 @@ export class FundraiserCardComponent implements OnDestroy, OnInit {
   transactionCount = 0;
 
   constructor(
-    private readonly service: DeleteFundraiserGQL,
+    private readonly service: DeleteFundraiserByIdGQL,
     private readonly getTransactionCount: GetTransactionCountByOwnerIdGQL,
     ) { }
 
