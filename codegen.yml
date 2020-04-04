@@ -1,5 +1,5 @@
 overwrite: true
-schema: http://localhost:3000/graphql
+schema: https://api.armorer.nl:8443/graphql
 documents: src/app/graphql/*.graphql
 generates:
   ./src/app/generated/graphql.ts:

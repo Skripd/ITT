@@ -599,7 +599,7 @@ export namespace CreateTransaction {
   };
 }
 
-export namespace DeleteFundraiser {
+export namespace DeleteFundraiserById {
   export type Variables = {
     id: string;
   };
@@ -607,7 +607,15 @@ export namespace DeleteFundraiser {
   export type Mutation = {
     __typename?: "Mutation";
 
+    deleteManyTransactions: DeleteManyTransactions;
+
     deleteFundraiser: Maybe<DeleteFundraiser>;
+  };
+
+  export type DeleteManyTransactions = {
+    __typename?: "BatchPayload";
+
+    count: Long;
   };
 
   export type DeleteFundraiser = {
@@ -922,12 +930,15 @@ export class CreateTransactionGQL extends Apollo.Mutation<
 @Injectable({
   providedIn: "root"
 })
-export class DeleteFundraiserGQL extends Apollo.Mutation<
-  DeleteFundraiser.Mutation,
-  DeleteFundraiser.Variables
+export class DeleteFundraiserByIdGQL extends Apollo.Mutation<
+  DeleteFundraiserById.Mutation,
+  DeleteFundraiserById.Variables
 > {
   document: any = gql`
-    mutation deleteFundraiser($id: ID!) {
+    mutation deleteFundraiserByID($id: ID!) {
+      deleteManyTransactions(where: { owner: { id: $id } }) {
+        count
+      }
       deleteFundraiser(where: { id: $id }) {
         id
       }
